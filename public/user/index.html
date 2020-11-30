@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="style.css" rel="stylesheet" />
+    <title>Frequency</title>
+  </head>
+  <body>
+    <div id="top-container">
+      <button id="info-button" class="button info-button">Instructions</button>
+      <!-- the modal itself -->
+      <div id="info-modal" class="modal">
+        <!-- modal content -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>
+            This is a pitch matching game, where each player hears two
+            oscillators, starting at different times and different frequencies.
+            Moving your mouse will change the frequency of the second
+            oscillator: the goal is to click as close as possible to the static
+            oscillator. Please enter a username. Then, start by clicking on the
+            “Start” button, which will create an oscillator with a random
+            frequency on the left side of your speakers. One second later, a
+            second oscillator will play, with a frequency that is 10% higher or
+            lower than the frequency on the left side. Click the screen once
+            you’ve settled on a position that closely matches the two
+            frequencies. Please submit your score to the server. The score that
+            is closest to zero is the winner!
+          </p>
+        </div>
+      </div>
+      <input type="text" id="uname" name="fname" placeholder="username" />
+      <button id="send-name" class="send-name">send</button>
+      <!-- <p class="toggle">Tap To Toggle</p> -->
+      <button id="play-button" class="button play-button">Start</button>
+      <button id="hear-button" class="button hear-button">Hear Messages</button>
+    </div>
+    <div id="score" class="score"></div>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/addons/p5.sound.min.js"></script>
+    <script src="sketch.js"></script>
+  </body>
+</html>
