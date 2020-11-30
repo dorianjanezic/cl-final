@@ -21,6 +21,7 @@ let nameInput;
 let sendButton;
 let curName;
 let toggleButton;
+let hearClicked;
 
 //variables for the Instructions window
 let modal = document.getElementById("info-modal");
@@ -78,6 +79,7 @@ window.addEventListener("load", () => {
   let msgEl;
 
   hearButton.addEventListener("click", () => {
+    hearClicked = true;
     msgEl = document.createElement("p");
     msgEl.innerHTML = "";
     //sends the score data to the server first
@@ -144,6 +146,26 @@ function setup() {
   freqAnalyzer = new p5.FFT();
 }
 
+function draw() {
+  if (hearClicked == true) {
+    waveform = analyzer.waveform();
+    waveFreq = freqAnalyzer.analyze();
+
+    for (let i = 0; i < waveform.length; i++) {
+      let angle = map(i, 0, waveform.length, 0, 360);
+      let amp = waveform[i];
+      let r = map(amp, 0, 128, 100, 5);
+      let x = r * cos(angle);
+      let y = r * sin(angle);
+      // let x = map(i, 0, waveform.length, 0, width);
+      // let y = map(waveform[i], -1, 1, 0, height);
+      // let radius = map(amp, 0, 0.5, 300, 5);
+      fill(255, 100, r, r);
+      // vertex(x, y);
+      ellipse(windowWidth / 3 + x, windowHeight / 2 + y, r);
+    }
+  }
+}
 function freqFromMouse() {
   // return map(mouseX, 0, width - 1, freq2 * 0.9, freq2 * 1.1);
 }
@@ -200,6 +222,7 @@ function mouseClicked() {
     // vertex(x, y);
     ellipse(windowWidth / 2 + x, windowHeight / 2 + y, r);
   }
+
   // draw the shape of the waveform
   push();
   beginShape();
@@ -223,8 +246,6 @@ function mouseClicked() {
   }
   endShape();
   pop();
-
-  return false;
 }
 
 function keyPressed() {
