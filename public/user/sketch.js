@@ -1,3 +1,28 @@
+const { Tone } = require("./tone");
+
+var audio = [];
+audio[0] = new Audio("../audio/bat1.mp3");
+audio[1] = new Audio("../audio/bat2.mp3");
+audio[2] = new Audio("../audio/bat3.mp3");
+audio[3] = new Audio("../audio/bat4.mp3");
+audio[4] = new Audio("../audio/bat5.mp3");
+audio[5] = new Audio("../audio/bat6.mp3");
+audio[6] = new Audio("../audio/bat7.mp3");
+
+
+console.log(audio);
+
+let divX;
+let divY;
+let oldIsPressed = false;
+let isPressed = false;
+let oldnoteoctave = "";
+let ellipseWidthMin = 15;
+let ellipseWidthMax = 150;
+let ellipseWidth = ellipseWidthMin;
+
+
+
 //create a socket namespace
 let socket = io("/user");
 let modSocket = io("/mod");
@@ -126,6 +151,19 @@ function preload() {
 }
 
 function setup() {
+
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  canvas = createCanvas(width, height);
+  divX = width / audio.length;
+  // divY = height / octaves.length;
+  for (i = 0; i < 8; i++) {
+    line(0, divY * i, width, divY * i);
+    line(divX * i, 0, divX * i, height);
+  }
+  synth = new Tone.Player("audio").toDestination();
+  colorMode(HSB, 255);
+
   //listen for freq data from the modulator page
   socket.on("freqData", (data) => {
     // console.log(data.freq);
@@ -147,6 +185,60 @@ function setup() {
 }
 
 function draw() {
+  if (Audio.context.state != 'running') {
+    audio.start();
+  }
+
+  if (isPressed) {
+
+    let audio = Math.round((mouseX + (divX / 2)) / divX) - 1
+    // let octave = Math.round((mouseY + (divY / 2)) / divY) - 1;
+    fill(colores[note], 127, 100);
+
+    if (ellipseWidth < ellipseWidthMax) {
+      ellipseWidth++;
+    }
+
+    ellipse(mouseX, mouseY, ellipseWidth, ellipseWidth);
+
+    let newnoteoctave = notes[note] + octaves[octave];
+
+    if (oldnoteoctave != newnoteoctave) {
+      oldnoteoctave = newnoteoctave;
+      synth.triggerRelease();
+      synth.triggerAttack(newnoteoctave);
+    }
+
+  } else {
+
+    if (oldIsPressed) {
+      oldnoteoctave = "";
+      ellipseWidth = ellipseWidthMin;
+      synth.triggerRelease();
+    }
+  }
+
+  oldIsPressed = isPressed;
+}
+
+function touchStarted() {
+  isPressed = true;
+}
+
+function touchEnded() {
+  isPressed = false;
+}
+
+function mousePressed() {
+  isPressed = true;
+}
+
+function mouseReleased() {
+  isPressed = false;
+
+
+
+
   if (hearClicked == true) {
     waveform = analyzer.waveform();
     waveFreq = freqAnalyzer.analyze();
@@ -265,3 +357,7 @@ function keyPressed() {
     }
   }
 }
+
+
+
+
